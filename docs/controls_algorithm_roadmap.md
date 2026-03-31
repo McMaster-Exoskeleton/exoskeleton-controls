@@ -103,8 +103,8 @@ For a single joint:
 | τ | Torque command to motor | Nm |
 | K | Stiffness (virtual spring) | Nm/rad |
 | D | Damping (virtual damper) | Nm·s/rad |
-| θ_target, θ_actual | Target and actual joint angle | rad |
-| θ̇_target, θ̇_actual | Target and actual joint velocity | rad/s |
+| θ_target, θ_actual | Target and actual joint angle | deg |
+| θ̇_target, θ̇_actual | Target and actual joint velocity | deg/s |
 
 ### Physical Intuition
 
@@ -133,7 +133,7 @@ Think of a **virtual spring and damper** connecting target to actual position:
 | Goal | Zero tracking error | Natural interaction |
 
 **With PID:** "Get to 30° and stay there no matter what"
-**With Impedance:** "Pull toward 30° with X Nm per radian of deviation"
+**With Impedance:** "Pull toward 30° with X Nm per degree of deviation"
 
 ---
 
@@ -394,9 +394,9 @@ Before computing torque, verify sensor data is valid:
 
 | Check | Threshold | Action on Failure |
 |-------|-----------|-------------------|
-| Encoder angle | ±2.5 rad (~143°) | Set τ = 0 (transparent) |
+| Encoder angle | ±143° | Set τ = 0 (transparent) |
 | Encoder angle | Not NaN | Set τ = 0 (transparent) |
-| Joint velocity | ±8 rad/s | Set τ = 0 (transparent) |
+| Joint velocity | ±458 deg/s | Set τ = 0 (transparent) |
 | Joint velocity | Not NaN | Set τ = 0 (transparent) |
 | ML command age | < 20 ms | Use fallback state machine |
 

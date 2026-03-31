@@ -39,7 +39,7 @@ The exoskeleton is designed as an **assistive device for firefighters**, augment
 ### Sensor Suite
 
 Available sensors per joint:
-- **Encoders**: Joint angle (rad) and velocity (rad/s) measurement
+- **Encoders**: Joint angle (deg) and velocity (deg/s) measurement
 - **IMUs**: Orientation and acceleration data
 
 
@@ -150,7 +150,7 @@ if θ > θ_max_soft:
 
 **Parameters (to be tuned):**
 - K_limit: ~50 Nm/rad (strong restoring torque near limits)
-- margin: 5-10° (safety buffer before hard stop)
+- margin: 5–10° (safety buffer before hard stop)
 
 See [controls_algorithm_roadmap.md](./controls_algorithm_roadmap.md) for more details
 
@@ -191,7 +191,7 @@ The system uses **asynchronous timing** with the MCU running faster than ML infe
 ### Sensor Data: MCU → Pi (100 Hz)
 
 1. **MCU reads sensors** (every control loop iteration, 200 Hz)
-   - Encoder: joint angle (rad), velocity (rad/s)
+   - Encoder: joint angle (deg), velocity (deg/s)
    - IMU: orientation, acceleration
 
 2. **MCU control loop uses sensor data locally** (200 Hz)
@@ -203,6 +203,7 @@ The system uses **asynchronous timing** with the MCU running faster than ML infe
    - Applies safety limits (magnitude, rate) and sends to motor
 
 3. **MCU publishes sensor data via micro-ROS** (100 Hz, every other iteration)
+   - Encoder angles (deg) and velocities (deg/s) are converted to radians and rad/s before publishing (ROS 2 convention)
    - micro-ROS client serializes `sensor_msgs/JointState` message
    - Custom CAN transport sends bytes over CAN bus
    - Message includes: position, velocity, effort (optional), timestamp
@@ -270,8 +271,8 @@ header:
   stamp: timestamp
   frame_id: "base_link"
 name: ["hip_left", "hip_right", "knee_left", "knee_right"]
-position: [θ₁, θ₂, θ₃, θ₄]  # radians
-velocity: [θ̇₁, θ̇₂, θ̇₃, θ̇₄]  # rad/s
+position: [θ₁, θ₂, θ₃, θ₄]  # radians (converted from encoder degrees)
+velocity: [θ̇₁, θ̇₂, θ̇₃, θ̇₄]  # rad/s (converted from encoder deg/s)
 effort: [τ₁, τ₂, τ₃, τ₄]     # Nm (optional, from motor current)
 ```
 
